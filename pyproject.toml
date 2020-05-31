@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "recommender"
+version = "0.1.0"
+description = "The LightFM recommender system"
+authors = ["Anton Ovchar <a.s.ovchar@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/nur-portal/DS-recommendations"
+packages = [{include = "recommender"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = {version = "^3.6.2", extras = ["speedups"]}
+aiohttp-apispec = "^2.2.1"
+aiomisc = "^9.7.8"
+aioredis = "^1.3.1"
+alembic = "^1.4.2"
+asyncpgsa = "^0.26.3"
+ConfigArgParse = "^1.2.3"
+lightfm = "^1.15"
+psycopg2-binary = "^2.8.5"
+redis = "^3.5.2"
+setproctitle = "^1.1.10"
+SQLAlchemy = "^1.3.17"
+
+[tool.poetry.dev-dependencies]
+jupyter = "^1.0.0"
+
+[tool.poetry.scripts]
+recommender-api = "recommender.api.__main__:main"
+recommender-db = "recommender.db.__main__:main"
+recommender-cache = "recommender.scripts.cache:main"
+recommender-data = "recommender.scripts.data:main"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  api:
+    build: .
+    image: recommender
+    container_name: api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-L", "http://localhost:8080/_healthz/", "||", "exit", "1"]
+    command: [
+      "recommender-api",
+      "--user=nobody",
+      "--api-address=0.0.0.0",
+      "--api-port=8080",
+      "--pg-url=postgresql://postgres:hackme@postgresql:5432/recommender",
+      "--redis-url=redis://:hackme@redis:6379/0",
+    ]
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgresql
+
+  redis:
+    image: bitnami/redis:5.0.9
+    container_name: redis
+    restart: always
+    environment:
+      - REDIS_PASSWORD=hackme
+    ports:
+      - 6379:6379
+
+  postgresql:
+    image: bitnami/postgresql:11.8.0
+    container_name: postgresql
+    restart: always
+    environment:
+      - POSTGRESQL_PASSWORD=hackme
+      - POSTGRESQL_DATABASE=recommender
+    ports:
+      - 5432:5432
