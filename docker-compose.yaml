@@ -5,8 +5,6 @@ services:
     build: .
     image: recommender
     container_name: api
-    healthcheck:
-      test: ["CMD", "curl", "-f", "-L", "http://localhost:8080/_healthz/", "||", "exit", "1"]
     command: [
       "recommender-api",
       "--user=nobody",
@@ -20,6 +18,7 @@ services:
       - 8080:8080
     depends_on:
       - postgresql
+      - redis
 
   redis:
     image: bitnami/redis:5.0.9
