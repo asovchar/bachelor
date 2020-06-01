@@ -45,7 +45,7 @@ group.add_argument('--log-format', choices=LogFormat.choices(),
                    default='color')
 
 
-def fetch_training_data(conn, ):
+def fetch_training_data():
     log.info("Fetching training data")
 
     data = fetch_stackexchange("crossvalidated",
