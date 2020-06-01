@@ -48,9 +48,6 @@ group.add_argument('--log-format', choices=LogFormat.choices(),
 def fetch_training_data(conn, ):
     log.info("Fetching training data")
 
-    query = select
-
-
     data = fetch_stackexchange("crossvalidated",
                                test_set_fraction=0.1,
                                indicator_features=False,
