@@ -1,4 +1,3 @@
-import numpy as np
 from aiohttp.web_exceptions import HTTPOk, HTTPAccepted, HTTPNoContent
 from aiohttp_apispec import request_schema
 from sqlalchemy import func, select
