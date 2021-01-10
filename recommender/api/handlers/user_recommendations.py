@@ -11,7 +11,7 @@ class UserRecommendationsView(BaseUserView):
 
     @property
     def limit(self):
-        return int(self.request["querystring"]["limit"])
+        return int(self.request["querystring"].get("limit", 10))
 
     @querystring_schema(RecommendationQSSchema)
     async def get(self):

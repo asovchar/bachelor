@@ -12,8 +12,4 @@ COPY recommender/ ./recommender/
 COPY README.md ./
 RUN poetry install --no-dev --no-interaction
 
-FROM python:3.8.0-slim
-
-COPY --from=builder /app/ /app/
-
 RUN ln -snf /app/.venv/bin/recommender-* /usr/local/bin/

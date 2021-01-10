@@ -1,4 +1,4 @@
-version: "3.7"
+version: "2.4"
 
 services:
   api:
@@ -17,8 +17,24 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - postgresql
-      - redis
+      redis:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+
+  db-migration:
+    build: .
+    image: recommender
+    container_name: db-migration
+    command: bash -c "recommender-db upgrade head && recommender-data && recommender-cache"
+    environment:
+      - RECOMMENDER_PG_URL=postgresql://postgres:hackme@postgresql:5432/recommender
+      - RECOMMENDER_REDIS_URL=redis://:hackme@redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
 
   redis:
     image: bitnami/redis:5.0.9
@@ -28,6 +44,11 @@ services:
       - REDIS_PASSWORD=hackme
     ports:
       - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 2s
+      retries: 10
 
   postgresql:
     image: bitnami/postgresql:11.8.0
@@ -38,3 +59,8 @@ services:
       - POSTGRESQL_DATABASE=recommender
     ports:
       - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "recommender" ]
+      interval: 5s
+      timeout: 2s
+      retries: 10

@@ -61,7 +61,7 @@ class UserView(BaseUserView):
 
     @staticmethod
     async def create_user(conn, user_id, data):
-        values = {k: v for k, v in data.users() if k != "features"}
+        values = {k: v for k, v in data.items() if k != "features"}
         values["id"] = user_id
         query = users_table.insert().values(values)
         await conn.execute(query)
@@ -72,8 +72,9 @@ class UserView(BaseUserView):
         for feature_id in feature_ids:
             values.append({"user_id": user_id,
                            "feature_id": feature_id})
-        query = user_description_table.insert().values(values)
-        await conn.execute(query)
+        if values:
+            query = user_description_table.insert().values(values)
+            await conn.execute(query)
 
     @staticmethod
     async def delete_user(conn, user_id):
@@ -95,7 +96,7 @@ class UserView(BaseUserView):
     @request_schema(UserSchema)
     async def put(self):
         async with self.pg.transaction() as conn:
-            feature_ids = self.request["data"].pop("feature_ids")
+            feature_ids = self.request["data"].pop("feature_ids", [])
             await self.create_user(conn, self.user_id, self.request["data"])
             await self.create_user_description(conn, self.user_id, feature_ids)
         return HTTPAccepted()
